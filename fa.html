@@ -1,33 +1,47 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8">
-    <title>Camera Example</title>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+    <title></title>
     <script type="text/javascript">
-        // 扩展API加载完毕后调用onPlusReady回调函数
-        document.addEventListener( "plusready", onPlusReady, false );
-        // 扩展API加载完毕，现在可以正常调用扩展API
-        function onPlusReady() {
-            console.log("plusready");
-        }
-        // 拍照
-        function captureImage(){
-            var cmr = plus.camera.getCamera();
-            var res = cmr.supportedImageResolutions[0];
-            var fmt = cmr.supportedImageFormats[0];
-            console.log("Resolution: "+res+", Format: "+fmt);
-            cmr.captureImage( function( path ){
-                    alert( "Capture image success: " + path );
-                },
-                function( error ) {
-                    alert( "Capture image failed: " + error.message );
-                },
-                {resolution:res,format:fmt}
-            );
-        }
+
+        window.addEventListener("DOMContentLoaded", function () {
+            // Grab elements, create settings, etc.
+            var canvas = document.getElementById("canvas"),
+                context = canvas.getContext("2d"),
+                video = document.getElementById("video"),
+                videoObj = { "video": true },
+                errBack = function (error) {
+                    console.log("Video capture error: ", error.code);
+                };
+
+            //
+            if (navigator.getUserMedia) { // Standard
+                navigator.getUserMedia(videoObj, function (stream) {
+                    video.src = stream;
+                    video.play();
+                }, errBack);
+            } else if (navigator.webkitGetUserMedia) { // WebKit-prefixed引擎
+                navigator.webkitGetUserMedia(videoObj, function (stream) {
+                    video.src = window.webkitURL.createObjectURL(stream);
+                    video.play();
+                }, errBack);
+            }
+            else if (navigator.mozGetUserMedia) { // Firefox-prefixed
+                navigator.mozGetUserMedia(videoObj, function (stream) {
+                    video.src = window.URL.createObjectURL(stream);
+                    video.play();
+                }, errBack);
+            }
+        }, false);
+
     </script>
 </head>
 <body>
-<button onclick="captureImage()">拍照</button>
+<form id="form1" runat="server">
+    <div>
+        <video id="video" width="640" height="480" autoplay></video>
+        <button id="snap">Snap Photo</button>
+        <canvas id="canvas" width="640" height="480"></canvas>
+    </div>
+</form>
 </body>
 </html>

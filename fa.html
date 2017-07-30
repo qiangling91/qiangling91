@@ -6,6 +6,7 @@
         window.addEventListener("DOMContentLoaded", function () {
             // Grab elements, create settings, etc.
             var canvas = document.getElementById("canvas"),
+                videoElement = document.getElementById("snap"),
                 context = canvas.getContext("2d"),
                 video = document.getElementById("video"),
                 videoObj = { "video": true },
@@ -17,18 +18,24 @@
             if (navigator.getUserMedia) { // Standard
                 navigator.getUserMedia(videoObj, function (stream) {
                     video.src = stream;
-                    video.play();
+                    videoElement.addEventListener("click", function () {
+                        video.play();
+                    });
                 }, errBack);
             } else if (navigator.webkitGetUserMedia) { // WebKit-prefixed引擎
                 navigator.webkitGetUserMedia(videoObj, function (stream) {
                     video.src = window.webkitURL.createObjectURL(stream);
-                    video.play();
+                    videoElement.addEventListener("click", function () {
+                        video.play();
+                    });
                 }, errBack);
             }
             else if (navigator.mozGetUserMedia) { // Firefox-prefixed
                 navigator.mozGetUserMedia(videoObj, function (stream) {
                     video.src = window.URL.createObjectURL(stream);
-                    video.play();
+                    videoElement.addEventListener("click", function () {
+                        video.play();
+                    });
                 }, errBack);
             }
         }, false);
